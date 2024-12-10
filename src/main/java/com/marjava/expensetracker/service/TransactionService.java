@@ -1,7 +1,9 @@
-package com.example.expensetracker.service;
+package com.marjava.expensetracker.service;
+import com.marjava.expensetracker.model.Transaction;
+import com.marjava.expensetracker.repository.TransactionRepository;
 
-import com.example.expensetracker.model.Transaction;
-import com.example.expensetracker.repository.TransactionRepository;
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,14 @@ public class TransactionService {
         return transactionRepo.findAll();
     }
 
-    public void saveTransaction(Transaction transaction) {
-        transactionRepo.save(transaction);
+    @Transactional
+    public Transaction saveTransaction(Transaction transaction) {
+        if (transaction.getDebts() != null) {
+            transaction.getDebts().forEach(debt -> debt.setTransaction(transaction));
+        }
+        return transactionRepo.save(transaction);
     }
-
+    
     public Transaction getTransactionById(Long id) {
         return transactionRepo.findById(id).orElse(null);
     }

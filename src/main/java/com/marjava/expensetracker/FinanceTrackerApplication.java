@@ -1,4 +1,4 @@
-package com.example.expensetracker;
+package com.marjava.expensetracker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

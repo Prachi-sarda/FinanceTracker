@@ -21,10 +21,8 @@
             });
         });
     </script>
-<!-- {% endblock %} -->
 </head>
 <body>
-<!-- {% block content %} -->
 <div class="container">
     <h1 class="mt-5">Transaction Tracker</h1>
     <table class="table table-striped mt-3">
@@ -34,30 +32,85 @@
             <th>Description</th>
             <th>Amount</th>
             <th>Type</th>
+            <th>Debtor's Name</th>
+            <th>Debt Amount</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="expense : ${transactions}">
-            <td th:text="${expense.id}">1</td>
-            <td th:text="${expense.description}">Description</td>
-            <td th:text="${expense.amount}">Amount</td>
-            <td th:text="${expense.type}">Type</td>
+        <tr th:each="transaction : ${transactions}">
+            <td th:text="${transaction.id}">1</td>
+            <td th:text="${transaction.description}">Description</td>
+            <td th:text="${transaction.amount}">Amount</td>
+            <td th:text="${transaction.type}">Type</td>
             <td>
-                <a class="btn btn-primary btn-sm" th:href="@{/editTransaction/{id}(id=${expense.id})}">
+                <ul>
+                    <li th:each="debt : ${transaction.debts}" th:text="${debt.debtorName}">Debtor Name</li>
+                </ul>
+                <div th:if="${transaction.debts == null}">No debts associated with this transaction</div>
+            </td>
+            <td>
+                <ul>
+                    <li th:each="debt : ${transaction.debts}" th:text="${debt.amount}">Debt Amount</li>
+                </ul>
+                <div th:if="${transaction.debts == null}">No debts associated with this transaction</div>
+            </td>
+            <td>
+                <a class="btn btn-primary btn-sm" th:href="@{/editTransaction/{id}(id=${transaction.id})}">
                     <i class="fas fa-pencil-alt"></i>
                 </a>
-                <a class="btn btn-danger btn-sm" th:href="@{/deleteTransaction/{id}(id=${expense.id})}" onclick="return confirm('Are you sure you want to delete this Transaction?');">
+                <a class="btn btn-danger btn-sm" th:href="@{/deleteTransaction/{id}(id=${transaction.id})}" onclick="return confirm('Are you sure you want to delete this Transaction?');">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </td>
+            
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Total: <span th:text="${totalBalance}">0.00</span></h2>
+    <a class="btn btn-success mt-3" href="/addTransaction">Add Transaction</a>
+
+
+    <h2 class="mt-5">Debt Tracker</h2>
+    <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+            <th>Owed to/from</th>
+            <th>Debt Amount</th>
+            <th>Debt Type</th>
+            <th>Debt Description</th>
+            <th>Due Date</th>
+            <th>Associated Transaction</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="debt : ${debts}">
+            <td th:text="${debt.debtorName}">Debtor Name</td>
+            <td th:text="${debt.amount}">Amount</td>
+            <td th:text="${debt.type}">Debt Type</td>
+            <td th:text="${debt.description}">Debt Description</td>
+            <td th:text="${debt.dueDate != null ? debt.dueDate : 'No due date'}"></td>
+            <td th:text="${debt.transaction != null ? 'TrxnID ' + debt.transaction.id + 
+            (debt.transaction.description != null && !debt.transaction.description.isEmpty() ? '- ' + debt.transaction.description : '') : 'No transaction found'}"></td>
+            <td>
+                <a class="btn btn-primary btn-sm" th:href="@{/editDebt/{id}(id=${debt.id})}">
+                    <i class="fas fa-pencil-alt"></i>
+                </a>
+                <a class="btn btn-danger btn-sm" th:href="@{/deleteDebt/{id}(id=${debt.id})}" onclick="return confirm('Are you sure you want to delete this Debt?');">
                     <i class="fas fa-trash-alt"></i>
                 </a>
             </td>
         </tr>
         </tbody>
     </table>
-    <h2>Total: <span th:text="${totalBalance}">0.00</span></h2>
-    <a class="btn btn-success mt-3" href="/addTransaction">Add Transaction</a>
+    <a href="/addDebt" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New Debt
+    </a>
 </div>
+
 <div th:insert="~{footer :: copy}"></div>
-<!-- {% endblock %} -->
+
 </body>
 </html>

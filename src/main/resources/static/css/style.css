@@ -1,8 +1,11 @@
 body {
     background: url('/images/background.png') no-repeat center center fixed;
     background-size: cover;
-    font-family: 'Arial', sans-serif;
-    color: #fff;
+    /* font-family: 'Georgia', serif; */
+    /* font-family: 'Merriweather', serif; */
+    font-family: 'Roboto Mono', monospace;    /* font-family: 'Courier New', monospace; */
+    font-weight: 200;
+    color: #053509;
     opacity: 0;
     transition: opacity 0.7s ease-in-out;
 }
@@ -14,28 +17,39 @@ body.loaded {
 h1, h2 {
     text-align: center;
     margin-top: 20px;
-    color: #ffebcd; /* light color matching the background */
+    color: #065415; /* light color matching the background */
 }
 
 h1.form-heading, h2.form-heading {
-    color: #fff; /* white color for form headings */
+    color: #000000; /* white color for form headings */
 }
 
 .container {
     margin-top: 50px;
-    background-color: rgba(0, 0, 0, 0.6); /* semi-transparent background for better readability */
+    background-color: rgba(228, 255, 230, 0.6); /* semi-transparent background for better readability */
     padding: 20px;
     border-radius: 10px;
-    color: #fff; /* white text inside the container */
+    color: #04500c; /* white text inside the container */
 }
 
 .table {
+    border: 2px solid rgb(0, 0, 0);
+    border-collapse: collapse;
+    width: 100%;
     margin-top: 20px;
-    color: #fff; /* white text for the table */
 }
 
-.table th, .table td {
-    color: #fff; /* ensure table text is white */
+.table th{
+    font-family: 'Courier New', monospace;
+    color: #f6fff9; /* ensure table text is white */
+}
+
+.table td {
+    color: #000000; /* ensure table text is white */
+    font-size: large;
+}
+th {
+    background-color: #064f21;
 }
 
 .btn {
@@ -47,7 +61,7 @@ a {
 }
 
 a.btn {
-    color: #fff; /* button link color */
+    color: #ffffff; /* button link color */
 }
 
 input, button {
@@ -55,23 +69,23 @@ input, button {
 }
 
 label {
-    color: #fff;
+    color: #000000;
 }
 
 .card {
-    background-color: rgba(255, 255, 255, 0.8); /* white background for the card with some transparency */
+    background-color: rgba(4, 66, 34, 0.8); /* white background for the card with some transparency */
     border: none;
     border-radius: 10px;
 }
 
 .card-title {
-    color: #333;
+    color: #000000;
 }
 
 .footer{
     margin-top: 4rem;
     text-align: center;
     font-size: larger;
-    background-color: white;
-    color: black;
+    background-color: rgb(11, 135, 38);
+    color: rgb(255, 255, 255);
 }

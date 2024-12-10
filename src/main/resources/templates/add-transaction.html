@@ -6,42 +6,142 @@
     <link href="/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('body').addClass('loaded');
-            $('a').on('click', function(e) {
-                e.preventDefault();
-                var link = $(this).attr('href');
-                $('body').removeClass('loaded');
-                setTimeout(function() {
-                    window.location.href = link;
-                }, 500);
-            });
-        });
-    </script>
 </head>
 <body>
-<div class="container">
-    <h1 class="mt-5 form-heading">Add Transaction</h1>
-    <form action="#" th:action="@{/saveTransaction}" th:object="${expense}" method="post" class="mt-3">
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <input type="text" id="description" name="description" th:field="*{description}" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="amount">Amount:</label>
-            <input type="text" id="amount" name="amount" th:field="*{amount}" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="type">Select Type of Transaction</label>
-            <!-- <input type="text" id="type" name="type" th:field="*{type}" class="form-control"> -->
-            <select id="type" name="type">
-                <option value=EXPENSE>EXPENSE</option>
-                <option value=INCOME>INCOME</option>
+    <div class="container">
+        <h1>Add Transaction</h1>
+        <form th:action="@{/saveTransaction}" th:object="${transaction}" method="post">
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" th:field="*{description}" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Amount:</label>
+                <input type="number" step="0.01" th:field="*{amount}" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>Transaction Type:</label>
+                <select th:field="*{type}" class="form-control">
+                    <option th:each="transactionType : ${T(com.marjava.expensetracker.model.Type).values()}" 
+                            th:value="${transactionType}" 
+                            th:text="${transactionType}">
+                    </option>
                 </select>
-        </div>
-        <button type="submit" class="btn btn-success">Save</button>
-    </form>
-</div>
+            </div>
+
+            <div id="debts-container">
+                <div th:each="debt, iterStat : *{debts}" class="debt-row" th:id="${'debt-row-' + iterStat.index}">
+                    <div class="form-group">
+                        <label>Debtor Name:</label>
+                        <input type="text" th:field="*{debts[__${iterStat.index}__].debtorName}" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Debt Amount:</label>
+                        <input type="number" step="0.01" th:field="*{debts[__${iterStat.index}__].amount}" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Debt Type:</label>
+                        <select th:field="*{debts[__${iterStat.index}__].type}" class="form-control">
+                            <option th:each="debtType : ${T(com.marjava.expensetracker.model.DebtType).values()}" 
+                                    th:value="${debtType}" 
+                                    th:text="${debtType}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group debt-description" style="display:none;">
+                        <label>Debt Description:</label>
+                        <input type="text" name="debts[${iterStat.index}].description" class="form-control">
+                    </div>
+
+                    <div class="form-group debt-due-date" style="display:none;">
+                        <label>Due Date:</label>
+                        <input type="date" name="debts[${iterStat.index}].dueDate" class="form-control">
+                    </div>
+                    
+
+                    <button type="button" class="btn btn-danger remove-debt">Remove Debt</button>
+                </div>
+            </div>
+
+            <button type="button" id="add-debt" class="btn btn-primary">Add Another Debtor</button>
+            <button type="submit" class="btn btn-success">Save Transaction</button>
+            <a href="/" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        $('body').addClass('loaded');
+                $('a').on('click', function(e) {
+                    e.preventDefault();
+                    var link = $(this).attr('href');
+                    $('body').removeClass('loaded');
+                    setTimeout(function() {
+                        window.location.href = link;
+                    }, 500);
+                });
+        let debtIndex = $('#debts-container .debt-row').length;
+
+        $('#add-debt').click(function() {
+            const newDebtRow = `
+                <div class="debt-row" id="debt-row-${debtIndex}">
+                    <div class="form-group">
+                        <label>Debtor Name:</label>
+                        <input type="text" name="debts[${debtIndex}].debtorName" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Debt Amount:</label>
+                        <input type="number" step="0.01" name="debts[${debtIndex}].amount" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Debt Type:</label>
+                        <select name="debts[${debtIndex}].type" class="form-control">
+                            <option value="CREDIT">CREDIT</option>
+                            <option value="DEBIT">DEBIT</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group debt-description">
+                        <label>Debt Description:</label>
+                        <input type="text" name="debts[${debtIndex}].description" class="form-control">
+                    </div>
+
+                    <!-- Due Date (Visible now) -->
+                    <div class="form-group debt-due-date">
+                        <label>Due Date:</label>
+                        <input type="date" name="debts[${debtIndex}].dueDate" class="form-control">
+                    </div>
+
+                    <button type="button" class="btn btn-danger remove-debt">Remove Debt</button>
+                </div>
+            `;
+            $('#debts-container').append(newDebtRow);
+            debtIndex++;
+        });
+
+        $(document).on('click', '.remove-debt', function() {
+            $(this).closest('.debt-row').remove();
+            reindexDebtRows();
+        });
+
+        function reindexDebtRows() {
+            $('#debts-container .debt-row').each(function(index) {
+                $(this).attr('id', `debt-row-${index}`);
+                $(this).find('input, select').each(function() {
+                    const name = $(this).attr('name');
+                    if (name) {
+                        $(this).attr('name', name.replace(/\[\d+\]/, `[${index}]`));
+                    }
+                });
+            });
+        }
+    });
+    </script>
 </body>
 </html>

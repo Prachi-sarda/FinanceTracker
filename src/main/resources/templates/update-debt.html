@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Update Debt</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('body').addClass('loaded');
+            
+            $('a').on('click', function(e) {
+                e.preventDefault();
+                var link = $(this).attr('href');
+                $('body').removeClass('loaded');
+                setTimeout(function() {
+                    window.location.href = link;
+                }, 500);
+            });
+
+            $('#updateDebtForm').on('submit', function(e) {
+                const amount = $('#amount').val();
+                const debtorName = $('#debtorName').val();
+                
+                if (!debtorName.trim()) {
+                    e.preventDefault();
+                    alert('Debtor Name cannot be empty');
+                }
+                
+                if (amount <= 0) {
+                    e.preventDefault();
+                    alert('Amount must be greater than zero');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 form-heading">Update Debt</h1>
+        
+        <form 
+            id="updateDebtForm"
+            action="#" 
+            th:action="@{'/updateDebt/' + ${debt.id}}" 
+            th:object="${debt}" 
+            method="post" 
+            class="mt-3"
+        >
+            <!-- Hidden input for ID to ensure it's passed in the request -->
+            <input type="hidden" th:field="*{id}">
+            
+            <div class="form-group">
+                <label for="debtorName">Debtor Name:</label>
+                <input 
+                    type="text"
+                    id="debtorName"
+                    th:field="*{debtorName}"
+                    class="form-control"
+                    required
+                >
+            </div>
+           
+            <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input 
+                    type="number"
+                    id="amount"
+                    th:field="*{amount}"
+                    class="form-control"
+                    step="0.01"
+                    required
+                >
+            </div>
+           
+            <div class="form-group">
+                <label for="type">Debt Type:</label>
+                <select 
+                    id="type"
+                    th:field="*{type}"
+                    class="form-control"
+                    required
+                >
+                    <option 
+                        th:each="debtType : ${T(com.example.expensetracker.model.DebtType).values()}" 
+                        th:value="${debtType}" 
+                        th:text="${debtType}"
+                    >
+                    </option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description (Optional):</label>
+                <textarea 
+                    id="description"
+                    th:field="*{description}"
+                    class="form-control"
+                    rows="3"
+                >
+                </textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="dueDate">Due Date (Optional):</label>
+                <input 
+                    type="date" 
+                    id="dueDate" 
+                    th:field="*{dueDate}" 
+                    class="form-control"
+                >
+            </div>
+           
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Debt</button>
+                <a href="/" class="btn btn-secondary">Cancel</a>
+                <a th:href="@{'/deleteDebt/' + ${debt.id}}" class="btn btn-danger">Delete Debt</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.marjava.expensetracker.controller;
 
 import com.marjava.expensetracker.model.Debt;
+import com.marjava.expensetracker.model.DebtType;
 import com.marjava.expensetracker.model.Transaction;
 import com.marjava.expensetracker.service.DebtService;
 import com.marjava.expensetracker.service.TransactionService;
@@ -70,6 +71,7 @@ public class DebtController {
     public String showEditDebtForm(@PathVariable Long id, Model model) {
         Debt debt = debtService.getDebtById(id);
         model.addAttribute("debt", debt);
+        model.addAttribute("DebtType", DebtType.class);
         return "update-debt";
     }
 

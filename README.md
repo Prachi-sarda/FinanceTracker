@@ -74,6 +74,3 @@ spring.datasource.url=jdbc:h2:file:/path/to/your/database/finance_tracker;DB_CLO
 - Add user authentication to track finances for different users.
 - Support for exporting financial reports (PDF/Excel).
 - Integration with external payment platforms or bank APIs for automated transaction syncing.
-
-
-Prachi
